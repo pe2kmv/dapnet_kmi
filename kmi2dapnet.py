@@ -6,7 +6,7 @@ import sys
 from datetime import datetime
 from txmapping import txmap as txmap
 from txmapping import rubricmap as rubricmap
-from knmimysql import *
+from kmimysql import *
 from sendmsg import *
 
 DBInit()
@@ -28,12 +28,6 @@ def GetTimeStamp():
 	timestamp = datetime.fromtimestamp(ts).strptime('%Y-%m-%d %H:%M:%S')
 	return(timestamp)
 
-#print(output['warnings'][1]['alert'].keys())
-#print(output['warnings'][1]['alert']['info'])
-#print(output['warnings'][0]['alert']['info'][0]['area'][0]['areaDesc'])
-#print(output['warnings'][1]['alert']['info'][0]['area'][0]['areaDesc'])
-#print(output['warnings'][0]['alert']['info'][0]['parameter'][0])
-#print(output['warnings'][0]['alert']['info'][0]['parameter'][1])
 
 def DecodeTimeStamp(TimeStamp):
 	UTC_Direction = TimeStamp[-6:-5]
@@ -42,10 +36,6 @@ def DecodeTimeStamp(TimeStamp):
 	UTC_OffsetMinutes = int(UTC_Direction + UTC_Offset[1])
 	timestamp = datetime.strptime(TimeStamp[:-6],'%Y-%m-%dT%H:%M:%S') + timedelta(hours = UTC_OffsetHours, minutes = UTC_OffsetMinutes)
 	return(timestamp)
-
-
-
-#knmifeed = feedparser.parse(feedurl)
 
 dbmessages = GetMsgList()
 
@@ -71,10 +61,14 @@ def strip_tags(html):
 
 # lookup in dictionary
 def SearchCode(keyword):
-	for msg in dbmessages:
-		if keyword in msg:
-			return(msg[1])
-
+	print('start search')
+	try:
+		for msg in dbmessages:
+			print('loop msg')
+			if keyword in msg:
+				return(msg[1])
+	except:
+		return()
 # main function
 try:
 	CurrentTime = datetime.now()
@@ -88,12 +82,15 @@ try:
 			rubrics = rubricmap[Area].split(',')
 			HeadLine = dataset['headline']
 			ColourCode = HeadLine.split()[0].upper()
-			print(ColourCode + ' - '+ SearchCode(Area))
+			print(ColourCode)
+			print(SearchCode(Area))
 			if ColourCode != SearchCode(Area):
 				for rb in rubrics:
-					send_rubric(HeadLine,rb)
+#					send_rubric(HeadLine,rb)
 					print(rb)
+			print('add warning')
 			AddWarningMessage(ColourCode,Area,HeadLine)
+			print('finis add warning')
 	CleanDB()
 except:
 	print('Error in main function')
