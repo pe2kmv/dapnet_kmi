@@ -1,2 +1,2 @@
-# dapnet_kmi
-DAPNET feed for weather warnings by the KMI - Belgium
+# dapnet_knmi
+DAPNET messages for KNMI weather alerts

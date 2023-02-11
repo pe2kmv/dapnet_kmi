@@ -1,0 +1,17 @@
+[user]
+username = yourdapnetusername
+password = yourdapnetpassword
+
+[dapnet]
+baseurl = http://www.hampager.de:8080
+coreurl = /calls
+trxurl = /transmitters
+newsurl = /news
+
+[database]
+server = databasehost
+username = databaseusername
+passwd = databasepassword
+database = databasename
+table = tablename
+retentiontime = 24
