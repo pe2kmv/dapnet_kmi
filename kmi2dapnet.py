@@ -8,6 +8,7 @@ from txmapping import txmap as txmap
 from txmapping import rubricmap as rubricmap
 from kmimysql import *
 from sendmsg import *
+from kmilogger import *
 
 DBInit()
 
@@ -20,7 +21,8 @@ def GetData():
 		output = json.loads(binary)
 		return(output['warnings'])
 	except:
-		exit(0)
+		kmi_err.error('kmi2dapnet.py - GetData() - Exit on except')
+		sys.exit(0)
 
 # create current timestamp
 def GetTimeStamp():
@@ -61,36 +63,37 @@ def strip_tags(html):
 
 # lookup in dictionary
 def SearchCode(keyword):
-	print('start search')
 	try:
 		for msg in dbmessages:
-			print('loop msg')
 			if keyword in msg:
 				return(msg[1])
 	except:
+		main_logger.debug('kmi2dapnet.py - SearchCode - Except reached')
 		return()
 # main function
 try:
 	CurrentTime = datetime.now()
 	warnings = GetData()
+	main_logger.debug('Main routine - start loop warnings')
 	for warning in warnings:
 		dataset = warning['alert']['info'][2]
 		StartTime = DecodeTimeStamp(dataset['effective'])
 		EndTime = DecodeTimeStamp(dataset['expires'])
+		main_logger.debug('Main routine - check timeframe of warning')
 		if CurrentTime >= StartTime and CurrentTime < EndTime:
+			main_logger.debug('Main routine - warning within timeframe')
 			Area = dataset['area'][0]['areaDesc']
 			rubrics = rubricmap[Area].split(',')
 			HeadLine = dataset['headline']
 			ColourCode = HeadLine.split()[0].upper()
-			print(ColourCode)
-			print(SearchCode(Area))
+			main_logger.debug('Main routine - check for ColourCode of specific area')
 			if ColourCode != SearchCode(Area):
+				main_logger.debug('Main routine - ColourCode of area has changed: send rubric')
 				for rb in rubrics:
+					msg_logger.info(Area + ' - ' + ColourCode + ' - ' + HeadLine + ' - ' + rb)
 #					send_rubric(HeadLine,rb)
-					print(rb)
-			print('add warning')
 			AddWarningMessage(ColourCode,Area,HeadLine)
-			print('finis add warning')
+			main_logger.info(Area + ' - ' + ColourCode + ' - ' + HeadLine) 
 	CleanDB()
 except:
 	print('Error in main function')
