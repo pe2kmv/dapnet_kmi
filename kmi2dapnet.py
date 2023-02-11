@@ -91,7 +91,7 @@ try:
 				main_logger.debug('Main routine - ColourCode of area has changed: send rubric')
 				for rb in rubrics:
 					msg_logger.info(Area + ' - ' + ColourCode + ' - ' + HeadLine + ' - ' + rb)
-#					send_rubric(HeadLine,rb)
+					send_rubric(HeadLine,rb)
 			AddWarningMessage(ColourCode,Area,HeadLine)
 			main_logger.info(Area + ' - ' + ColourCode + ' - ' + HeadLine) 
 	CleanDB()
