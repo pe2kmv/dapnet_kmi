@@ -3,6 +3,7 @@ import requests
 import json
 import sys
 import os
+from kmilogger import *
 
 # set variables
 #assign configuration file
@@ -18,6 +19,7 @@ try:
 
 except:
 	#no luck reading the config file, write error and bail out
+	error_logger.error('sendmsg.py - error reading configuration')
 	sys.exit(0)
 
 
@@ -25,10 +27,8 @@ def send_page(msg_ric,func,trx,emr,msgtxt):
 	req = requests.post(dapnet_uri,auth=(dapnet_user,dapnet_pw),json={'text':msgtxt,'callSignNames':[msg_ric],'transmitterGroupNames':trx,'emergency':emr})
 
 def send_rubric(msgtxt,rbname):
-	print('start sending')
+	main_logger.debug('sendmsg.py - start sending rubric')
 	if len(msgtxt) > 80:
-		print('length cut')
 		msgtxt = msgtxt[0:77] + '...'
-	print('start http')
 	req = requests.post(dapnet_rubric,auth=(dapnet_user,dapnet_pw),json={'text':msgtxt,'rubricName':rbname,'number':1})
-	print(req)
+	main_logger.debug(str(req))
