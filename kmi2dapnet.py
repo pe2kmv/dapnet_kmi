@@ -96,6 +96,6 @@ try:
 			main_logger.info(Area + ' - ' + ColourCode + ' - ' + HeadLine) 
 	CleanDB()
 except:
-	print('Error in main function')
+	main_logger.error('Error in main function')
 	sys.exit(0)
 
