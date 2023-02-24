@@ -5,6 +5,7 @@ import os
 import time
 from datetime import datetime, timedelta
 from txmapping import txmap as txmap
+from kmilogger import *
 
 #assign configuration file
 cfg = configparser.RawConfigParser()
@@ -29,7 +30,7 @@ try:
 	db = MySQLdb.connect(host=db_server,user=db_user,passwd=db_passwd,db=db_database)
 except:
 	#can't connect to database, bail out
-#	logger.error('No connection to database')
+	main_logger.error('No connection to database')
 	sys.exit()
 
 # create timestamp
